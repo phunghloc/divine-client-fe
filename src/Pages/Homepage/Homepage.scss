@@ -1,0 +1,27 @@
+.content {
+	
+
+	a {
+		width: 100%;
+	}
+
+	.ant-card {
+    border-radius: 5px;
+    box-shadow: 0 0 10px #ddd;
+    border: 1px solid #dedede;
+    &:hover {
+      box-shadow: 0 0 15px #888;
+    }
+		.card-bottom {
+			margin-top: 12px;
+			display: flex;
+			flex-direction: column;
+
+			button {
+				margin: 6px auto 0;
+				color: #21beff;
+				border-color: #21beff;
+			}
+		}
+	}
+}

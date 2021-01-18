@@ -1,0 +1,32 @@
+.cart-overlay {
+	width: 360px;
+	border-radius: 6px;
+
+	.cart-item {
+		display: flex;
+		justify-content: space-between;
+
+		p {
+			margin: auto 18px;
+			&:first-child {
+				margin-left: 0;
+			}
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
+
+	h1 {
+		text-align: center;
+		color: rgb(0, 66, 165);
+	}
+}
+
+.cart-btn {
+	margin: auto;
+	svg {
+		font-size: 30px;
+		color: white;
+	}
+}

@@ -1,0 +1,14 @@
+.container {
+	.ant-breadcrumb {
+		margin-bottom: 1rem;
+	}
+	.ant-table-wrapper {
+		box-shadow: 0 0 20px #ccc;
+		.ant-table-thead {
+			th {
+				background-color: #4267b2;
+				color: white;
+			}
+		}
+	}
+}

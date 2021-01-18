@@ -1,0 +1,58 @@
+.header {
+	background-color: #4267b2;
+	height: 80px;
+
+	@media (max-width: 792px) {
+		padding: 0 30px;
+	}
+
+	@media (max-width: 576px) {
+		padding: 18px;
+	}
+
+	.container-header {
+		height: 100%;
+		display: flex;
+		justify-content: space-between;
+		max-width: 1200px;
+		margin: auto;
+
+		.logo-link {
+			margin: auto;
+			height: 100%;
+			display: flex;
+			img {
+				margin: auto;
+				height: 70%;
+			}
+			img:last-child {
+				height: 24px;
+			}
+			@media (max-width: 792px) {
+				display: none;
+			}
+		}
+
+		.search {
+			margin: auto;
+			padding: 0 12px;
+			max-width: 600px;
+
+			// @media (max-width: 792px) {
+			// 	display: none;
+			// }
+		}
+
+		.login-btn {
+			margin: auto;
+			font-size: 16px;
+			color: white;
+		}
+
+		.cart-btn {
+			margin: auto;
+			font-size: 16px;
+			color: white;
+		}
+	}
+}

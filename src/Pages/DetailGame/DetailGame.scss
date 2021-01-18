@@ -1,0 +1,81 @@
+.detail-game {
+	h1 {
+		margin: 12px 0;
+	}
+
+	.spin {
+		width: 100%;
+		height: 80vh;
+	}
+
+	.img-container {
+		text-align: center;
+	}
+
+	.info-container {
+		h1 {
+			margin-top: 0;
+		}
+		.ant-descriptions-title {
+			font-size: 24px;
+		}
+		.ant-descriptions-item-label {
+			font-size: 18px;
+			font-weight: 500;
+		}
+
+		.ant-descriptions-item-content {
+			font-size: 18px;
+		}
+
+		.buy-box {
+			border-radius: 4px;
+			padding: 16px 16px 26px;
+			background: linear-gradient(
+				-60deg,
+				rgba(19, 120, 179, 0.664) 5%,
+				rgb(83, 125, 207) 95%
+			);
+			position: relative;
+
+			h2 {
+				color: white;
+			}
+			.buy-btn {
+				position: absolute;
+				right: 12px;
+				bottom: -20px;
+				background-color: black;
+				padding: 4px;
+				border-radius: 4px;
+				display: flex;
+
+				h2 {
+					color: white;
+					margin: 0 12px 0 8px;
+				}
+
+				button {
+					background: linear-gradient(to right, #75b022 5%, #588a1b 95%);
+					color: white;
+					font-weight: 500;
+					border: none;
+				}
+			}
+		}
+	}
+
+	.description {
+		background-color: #dadada;
+    padding: 24px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+	}
+
+	.requirements {
+		.ant-descriptions-item-label {
+			background-color: #f1f1f1;
+		}
+	}
+}
