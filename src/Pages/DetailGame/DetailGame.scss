@@ -13,6 +13,7 @@
 	}
 
 	.info-container {
+		padding: 0 12px;
 		h1 {
 			margin-top: 0;
 		}
@@ -50,9 +51,9 @@
 				border-radius: 4px;
 				display: flex;
 
-				h2 {
+				h3 {
 					color: white;
-					margin: 0 12px 0 8px;
+					margin: auto 12px auto 8px;
 				}
 
 				button {
@@ -60,6 +61,39 @@
 					color: white;
 					font-weight: 500;
 					border: none;
+
+					&:disabled {
+						background: linear-gradient(to left, #d4b106 5%, #876800 95%);
+					}
+				}
+			}
+		}
+		.owned-box {
+			margin-bottom: 30px;
+			background: linear-gradient(to right, #24476d 5%, #8ab1d8 95%);
+			border-radius: 4px;
+			h2 {
+				background: linear-gradient(to right, #75b022 5%, #588a1b 95%);
+				padding: 12px;
+				margin-bottom: 0;
+				color: #b7eb8f;
+			}
+			.btn-group {
+				text-align: center;
+				padding: 1rem;
+
+				a {
+					margin: auto;
+					button {
+						background: linear-gradient(
+							to bottom,
+							rgb(129, 182, 211) 5%,
+							rgb(95, 147, 175) 95%
+						);
+						color: white;
+						font-weight: 500;
+						border: none;
+					}
 				}
 			}
 		}
@@ -67,10 +101,10 @@
 
 	.description {
 		background-color: #dadada;
-    padding: 24px;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 100%;
+		padding: 24px;
+		border-radius: 5px;
+		font-size: 16px;
+		width: 100%;
 	}
 
 	.requirements {

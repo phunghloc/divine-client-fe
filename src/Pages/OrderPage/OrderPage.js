@@ -23,7 +23,6 @@ export default function OrderPage() {
 		axios
 			.get('/orders', { headers: { Authorization: `Bearer ${token}` } })
 			.then((res) => {
-				console.log(res.data);
 				setData(res.data.orders);
 			})
 			.catch((err) => {
@@ -49,25 +48,26 @@ export default function OrderPage() {
 				/>
 			)}
 			<Breadcrumb>
-				<Breadcrumb.Item href="/">
-					<HomeOutlined />
+				<Breadcrumb.Item>
+					<Link to="/">
+						<HomeOutlined />
+					</Link>
 				</Breadcrumb.Item>
-				<Breadcrumb.Item href="/tat-ca-game">
-					<UserOutlined />
-					<span>Trang của {userData ? userData.name : 'User'}</span>
+				<Breadcrumb.Item>
+					<Link to="/tai-khoan">
+						<UserOutlined />
+						<span>Trang của {userData ? userData.name : 'User'}</span>
+					</Link>
 				</Breadcrumb.Item>
 				<Breadcrumb.Item>Lịch sử đơn hàng</Breadcrumb.Item>
 			</Breadcrumb>
 			<Table dataSource={data} scroll={{ x: 768 }} loading={loading}>
 				<Table.Column
-					title="Ngày mua / ID Đơn hàng"
+					title="Ngày mua"
 					dataIndex="createdAt"
 					key="createdAt"
-					render={(value, record) => (
-						<p>
-							{moment(value).format('LLL')} - {record._id}
-						</p>
-					)}
+					width={120}
+					render={(value, record) => <p>{moment(value).format('L')}</p>}
 				/>
 				<Table.Column
 					title="Các game"
@@ -112,7 +112,7 @@ export default function OrderPage() {
 					title="Chi tiết"
 					dataIndex=""
 					render={(value, record) => (
-						<Link to="/">
+						<Link to={`/don-hang/${record._id}`}>
 							<Button type="primary">Xem chi tiết</Button>
 						</Link>
 					)}
@@ -123,71 +123,3 @@ export default function OrderPage() {
 		</Layout.Content>
 	);
 }
-
-// {/* <Collapse
-// 				defaultActiveKey={['0']}
-// 				className="site-collapse-custom-collapse"
-// 			>
-// 				{data.map((order, index) => {
-// 					const renderGames = order.games.map((game) => {
-// 						return {
-// 							key: game._id,
-// 							name: game.game.name,
-// 							image: game.game.images[0].url,
-// 							keygame: game.key.key,
-// 							price: game.price,
-// 						};
-// 					});
-// 					const action = (value, record) => {
-// 						return (
-// 							<Button
-// 								type="link"
-// 								onClick={() => activeGameByKey(record.keygame)}
-// 							>
-// 								Kích hoạt
-// 							</Button>
-// 						);
-// 					};
-// 					return (
-// 						<Collapse.Panel
-// 							header={`Mã đơn hàng: ${order._id} - ${moment(
-// 								order.createdAt,
-// 							).format('LLL')}`}
-// 							key={index}
-// 							className="site-collapse-custom-panel"
-// 						>
-// 							<Table
-// 								dataSource={renderGames}
-// 								pagination={false}
-// 								scroll={{ x: 576 }}
-// 							>
-// 								<Table.Column
-// 									title="Hình ảnh game"
-// 									dataIndex="image"
-// 									width={120}
-// 									render={(img) => <Image src={img} width={80} />}
-// 								/>
-// 								<Table.Column title="Tên Game" dataIndex="name" key="name" />
-// 								<Table.Column
-// 									title="Giá game"
-// 									dataIndex="price"
-// 									key="price"
-// 									render={(price) => <p>{price.toLocaleString()} VNĐ</p>}
-// 								/>
-// 								<Table.Column
-// 									title="Keygame"
-// 									dataIndex="keygame"
-// 									key="keygame"
-// 								/>
-// 								<Table.Column
-// 									title=""
-// 									dataIndex=""
-// 									key=""
-// 									render={action}
-// 									fixed="right"
-// 								/>
-// 							</Table>
-// 						</Collapse.Panel>
-// 					);
-// 				})}
-// 			</Collapse> */}

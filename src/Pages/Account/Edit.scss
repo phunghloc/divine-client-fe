@@ -1,0 +1,40 @@
+.upload {
+	text-align: center;
+	margin: 12px 0;
+	.ant-image {
+		margin-bottom: 24px;
+		img {
+			max-width: 400px;
+			border-radius: 5px;
+		}
+	}
+
+	.upload-group-btn {
+		margin: 18px 0;
+		button {
+			margin: 6px;
+		}
+	}
+}
+
+.change-info {
+	max-width: 900px;
+	margin: auto;
+	label {
+		font-size: 16px;
+	}
+	input,
+	textarea,
+	.ant-input-password {
+		padding: 8px 12px;
+		font-size: 16px;
+		border-radius: 8px;
+	}
+
+	.btn-group {
+		text-align: center;
+		button {
+			margin: 0 12px;
+		}
+	}
+}

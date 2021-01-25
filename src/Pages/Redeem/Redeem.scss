@@ -1,0 +1,46 @@
+.redeem {
+	display: flex;
+	.redeem-container {
+		margin: auto;
+
+    .placeholder {
+      width: 100%;
+      height: 360px;
+      background-color: #4267b2;
+      display: flex;
+      border-radius: 4px;
+      img {
+        margin: auto;
+        width: 80px;
+      }
+    }
+
+		.ant-col:last-child {
+			padding: 12px;
+			input {
+				margin: 12px 0;
+				font-size: 24px;
+
+				&:focus {
+					outline: none;
+					box-shadow: none;
+				}
+			}
+
+			button {
+				font-weight: 500;
+        border: none;
+        margin: 6px 0;
+			}
+
+			.redeem-btn {
+				background: linear-gradient(to right, #75b022 5%, #588a1b 95%);
+				color: white;
+
+				&:disabled {
+					background: #aaa;
+				}
+			}
+		}
+	}
+}

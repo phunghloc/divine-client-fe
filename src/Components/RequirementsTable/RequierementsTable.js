@@ -3,7 +3,7 @@ import { Descriptions } from 'antd';
 
 export default function RequirementsTable(props) {
 	return (
-		<Descriptions title={props.title} bordered column={1}>
+		<Descriptions title={props.title} bordered column={1} >
 			<Descriptions.Item label="OS">{props.requirement.os}</Descriptions.Item>
 			<Descriptions.Item label="Processor">
 				{props.requirement.processor}

@@ -7,8 +7,10 @@ let timer;
 export const useSearch = () => {
 	const [searchGame, setSearchGame] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
+	const [loadingSearch, setLoadingSearch] = useState(false);
 
 	useEffect(() => {
+		setLoadingSearch(true);
 		if (searchValue) {
 			clearTimeout(timer);
 			timer = setTimeout(() => {
@@ -19,12 +21,16 @@ export const useSearch = () => {
 					})
 					.catch((err) => {
 						console.log(err);
+					})
+					.finally(() => {
+						setLoadingSearch(false);
 					});
 			}, 200);
 		} else {
+			setLoadingSearch(false);
 			setSearchGame([]);
 		}
 	}, [searchValue]);
 
-	return { searchGame, searchValue, setSearchValue };
+	return { searchGame, searchValue, setSearchValue, loadingSearch };
 };

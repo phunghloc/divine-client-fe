@@ -4,44 +4,14 @@ import { BellOutlined, WalletTwoTone } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 import './Login.scss';
-import { AuthContext } from '../../Custom/context/AuthContext';
+import Cart from '../Cart/Cart';
 import CashFormModal from './CashFormModal';
+import { AuthContext } from '../../Custom/context/AuthContext';
 
 const UserLogined = () => {
 	const [visibleCashForm, setVisibleCashForm] = useState(false);
 	const { userData, logout } = useContext(AuthContext);
-	const menu = (
-		<Menu className="user-menu">
-			<Menu.Item>
-				<a
-					target="_blank"
-					rel="noopener noreferrer"
-					href="http://www.alipay.com/"
-				>
-					1st menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a
-					target="_blank"
-					rel="noopener noreferrer"
-					href="http://www.taobao.com/"
-				>
-					2nd menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a
-					target="_blank"
-					rel="noopener noreferrer"
-					href="http://www.tmall.com/"
-				>
-					3rd menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item danger>a danger item</Menu.Item>
-		</Menu>
-	);
+	const menu = <Menu className="user-menu"></Menu>;
 	const menuAccount = (
 		<Menu className="user-menu">
 			<Menu.Item className="user-menu-balance">
@@ -60,10 +30,16 @@ const UserLogined = () => {
 					Nạp thêm
 				</Button>
 			</Menu.Item>
-			<Menu.Item>Thông tin tài khoản</Menu.Item>
+			<Menu.Item>
+				<Link to="/tai-khoan/">Thông tin tài khoản</Link>
+			</Menu.Item>
 
 			<Menu.Item>
-				<Link to="/don-hang">Lịch sử đơn hàng</Link>
+				<Link to="/doi-ma/">Đổi mã keygame</Link>
+			</Menu.Item>
+
+			<Menu.Item>
+				<Link to="/lich-su">Lịch sử giao dịch</Link>
 			</Menu.Item>
 
 			<Menu.Item danger onClick={logout}>
@@ -86,6 +62,7 @@ const UserLogined = () => {
 					{userData.name}
 				</Button>
 			</Dropdown>
+			<Cart />
 			<CashFormModal
 				visibleCashForm={visibleCashForm}
 				setVisibleCashForm={setVisibleCashForm}

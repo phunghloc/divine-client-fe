@@ -1,0 +1,53 @@
+.account {
+	border-radius: 5px;
+	min-height: 80vh;
+	.account-header {
+		border-radius: 14px;
+		background-color: white;
+		padding: 12px;
+		margin-bottom: 16px;
+		background: linear-gradient(to left, #24476d 5%, #6c97c2 95%);
+
+		.avatar {
+			display: flex;
+			.ant-image {
+				margin: auto;
+				img {
+          border-radius: 5px;
+          max-width: 360px;
+				}
+			}
+		}
+
+		.info,
+		.level {
+			padding: 16px;
+		}
+
+		.info {
+			.ant-typography {
+				color: white;
+				margin-bottom: 0;
+			}
+			.text {
+				color: rgb(218, 216, 216);
+				margin-top: 24px;
+			}
+			@media (max-width: 768px) {
+        // display: none;
+        h2, .create-date {
+          text-align: center;
+        }
+			}
+		}
+		.card {
+			// background-color: #050a36;
+			padding: 6px;
+			.ant-statistic-title {
+				font-size: 16px;
+				font-weight: 500;
+				color: white;
+			}
+		}
+	}
+}

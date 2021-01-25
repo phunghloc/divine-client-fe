@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { Modal } from 'antd';
 
 const ErrorModal = (props) => {
@@ -18,4 +17,4 @@ const ErrorModal = (props) => {
 	return <>{props.visible && error()}</>;
 };
 
-export default withRouter(ErrorModal);
+export default ErrorModal;

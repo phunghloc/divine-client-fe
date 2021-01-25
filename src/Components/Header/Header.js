@@ -6,7 +6,6 @@ import logoFlat from '../../assets/images/logo-1.png';
 import logoCircle from '../../assets/images/logo_divine_pure_white.png';
 
 import './Header.scss';
-import Cart from '../Cart/Cart';
 import Login from '../Login/Login';
 import UserLogined from '../Login/UserLogined';
 import { AuthContext } from '../../Custom/context/AuthContext';
@@ -14,7 +13,12 @@ import { useSearch } from '../../Custom/hooks/SearchHook';
 
 function Header(props) {
 	const auth = useContext(AuthContext);
-	const { searchGame, setSearchValue, searchValue } = useSearch();
+	const {
+		searchGame,
+		setSearchValue,
+		searchValue,
+		loadingSearch,
+	} = useSearch();
 
 	const menu = (
 		<Menu>
@@ -29,7 +33,7 @@ function Header(props) {
 				searchGame.map((game) => (
 					<Menu.Item
 						key={game.name}
-						icon={<img height="40" src={game.images} alt={game.name} />}
+						icon={<img height="40" src={game.images[0].url} alt={game.name} />}
 						onClick={() => {
 							props.history.push(`/detail-game/${game._id}`);
 						}}
@@ -58,6 +62,7 @@ function Header(props) {
 					<Input.Search
 						placeholder="Nhập để tìm kiếm sản phẩm"
 						allowClear
+						loading={loadingSearch}
 						enterButton
 						size="large"
 						className="search"
@@ -65,8 +70,6 @@ function Header(props) {
 					/>
 				</Dropdown>
 				{auth.userData ? <UserLogined /> : <Login login={auth.login} />}
-
-				<Cart />
 			</div>
 		</Layout.Header>
 	);

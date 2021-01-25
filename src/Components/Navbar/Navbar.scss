@@ -24,4 +24,8 @@
       background-color: #4267B2;
     }
   }
+
+  @media (max-width: 768px) {
+    display: none
+  }
 }

@@ -55,8 +55,7 @@ const Login = (props) => {
 			})
 			.catch((err) => {
 				setLoading(false);
-				console.log(err);
-				// setErrorLogin(err.response.data.message);
+				setErrorLogin(err.response.data.message);
 			});
 	};
 

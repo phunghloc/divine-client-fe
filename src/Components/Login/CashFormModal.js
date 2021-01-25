@@ -41,6 +41,7 @@ export default function CashFormModal(props) {
 	const sendCashCode = (form) => {
 		setSuccess(null);
 		setError(null);
+		setLoadingFetchCash(true);
 		const token = localStorage.getItem('token');
 		const config = { headers: { Authorization: `Bearer ${token}` } };
 		axios
@@ -51,6 +52,9 @@ export default function CashFormModal(props) {
 			})
 			.catch((err) => {
 				setError(err.response.data.message);
+			})
+			.finally(() => {
+				setLoadingFetchCash(false);
 			});
 	};
 
@@ -100,7 +104,7 @@ export default function CashFormModal(props) {
 				</Form.Item>
 
 				<Form.Item {...tailLayout}>
-					<Button type="primary" htmlType="submit">
+					<Button type="primary" htmlType="submit" loading={loadingFetchCash}>
 						Nạp thẻ
 					</Button>
 				</Form.Item>

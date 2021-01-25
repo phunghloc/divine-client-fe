@@ -11,12 +11,14 @@ import {
 	Divider,
 	Button,
 	Tag,
+	notification,
 } from 'antd';
 import { HomeOutlined, TrophyOutlined, SyncOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 import './DetailGame.scss';
 import axios from '../../axios-constain';
+import Comments from '../../Components/Comments/Comments';
 import ErrorModal from '../../Components/ErrorModal/ErrorModal';
 import CarouselSync from '../../Components/CarouselSync/CarouselSync';
 import RequierementsTable from '../../Components/RequirementsTable/RequierementsTable';
@@ -43,6 +45,39 @@ const DetailGame = (props) => {
 	const { gameId } = useParams();
 	const { userData, setNeedLogin, updateCart } = useContext(AuthContext);
 
+	useEffect(() => {
+		window.scrollTo(0, 0);
+
+		setTimeout(() => {
+			let config = {};
+			const token = localStorage.getItem('token');
+			if (token) {
+				config = { headers: { Authorization: `Bearer ${token}` } };
+			}
+			axios
+				.get(`/detail-game/${gameId}`, config)
+				.then((res) => {
+					setGame(res.data.game);
+				})
+				.catch((err) => {
+					console.log(err.response);
+					setError(err.response);
+				});
+		}, 50);
+	}, [gameId, userData]);
+
+	const openSuccessAddToCartNotification = (name) => {
+		notification['success']({
+			message: 'Thêm vào giỏ hàng thành công',
+			description: `Thêm sản phẩm ${name} vào giỏ hàng thành công!`,
+			duration: 5,
+			top: 70,
+			style: {
+				borderRadius: '5px',
+			},
+		});
+	};
+
 	const addToCart = () => {
 		if (!userData) {
 			return setNeedLogin(true);
@@ -62,6 +97,7 @@ const DetailGame = (props) => {
 			)
 			.then((res) => {
 				const cart = [...userData.cart, res.data.game];
+				openSuccessAddToCartNotification(res.data.game.name);
 				updateCart(cart);
 			})
 			.catch((err) => {
@@ -72,19 +108,6 @@ const DetailGame = (props) => {
 				setLoading(false);
 			});
 	};
-
-	useEffect(() => {
-		window.scrollTo(0, 0);
-		axios
-			.get(`/detail-game/${gameId}`)
-			.then((res) => {
-				setGame(res.data.game);
-			})
-			.catch((err) => {
-				console.log(err.response);
-				setError(err.response);
-			});
-	}, [gameId]);
 
 	if (error && error.status === 404) {
 		return <Redirect to="/404" />;
@@ -104,16 +127,22 @@ const DetailGame = (props) => {
 		? userData.cart.find((game) => game._id === gameId)
 		: false;
 
+	console.log(game);
+
 	if (game) {
 		content = (
 			<>
 				<Breadcrumb>
-					<Breadcrumb.Item href="/">
-						<HomeOutlined />
+					<Breadcrumb.Item>
+						<Link to="/">
+							<HomeOutlined />
+						</Link>
 					</Breadcrumb.Item>
-					<Breadcrumb.Item href="/tat-ca-game">
-						<TrophyOutlined />
-						<span>Tất cả game</span>
+					<Breadcrumb.Item>
+						<Link to="/tat-ca-game">
+							<TrophyOutlined />
+							<span>Tất cả game</span>
+						</Link>
 					</Breadcrumb.Item>
 					<Breadcrumb.Item>{game.name}</Breadcrumb.Item>
 				</Breadcrumb>
@@ -124,12 +153,7 @@ const DetailGame = (props) => {
 					<Col md={12} xs={24} className="img-container">
 						<CarouselSync images={game.images} />
 					</Col>
-					<Col
-						md={12}
-						xs={24}
-						className="info-container"
-						style={{ padding: '0 30px' }}
-					>
+					<Col md={12} xs={24} className="info-container">
 						<Descriptions layout="vertical" column={2} size="small">
 							<Descriptions.Item label="Nhà phát triển">
 								<Link
@@ -156,11 +180,28 @@ const DetailGame = (props) => {
 							</Descriptions.Item>
 						</Descriptions>
 						<Divider />
+						{game.linkSteam && (
+							<div className="owned-box">
+								<h2>Bạn đã sở hữu {game.name}.</h2>
+								<div className="btn-group">
+									<a
+										href={game.linkSteam}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<Button>Chơi ngay</Button>
+									</a>
+								</div>
+							</div>
+						)}
 						<div className="buy-box">
-							<h2>Mua {game.name}</h2>
+							<h2>
+								Mua {game.name}
+								{game.linkSteam && ' cho bạn bè'}.
+							</h2>
 
 							<div className="buy-btn">
-								<h2>{game.price.toLocaleString()} VNĐ</h2>
+								<h3>{game.price.toLocaleString()} VNĐ</h3>
 								<Button
 									onClick={addToCart}
 									loading={loading}
@@ -186,6 +227,15 @@ const DetailGame = (props) => {
 						<RequierementsTable
 							requirement={game.recommendRequirement}
 							title="Cấu hình đề nghị"
+						/>
+					</Col>
+					<Col xs={24} md={16} style={{ margin: 'auto' }}>
+						<Comments
+							userData={userData}
+							comments={game.comments}
+							gameId={gameId}
+							game={game}
+							setGame={setGame}
 						/>
 					</Col>
 				</Row>

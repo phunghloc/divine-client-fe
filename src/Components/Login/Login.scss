@@ -85,6 +85,10 @@
 			font-weight: 500;
 		}
 	}
+
+	@media (max-width: 768px) {
+		display: none;
+	}
 }
 
 .user-menu {
@@ -111,7 +115,7 @@
 .fetch-test {
 	display: flex;
 	flex-direction: column;
-	
+
 	button {
 		margin: auto;
 	}

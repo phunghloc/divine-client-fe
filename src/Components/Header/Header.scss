@@ -2,12 +2,12 @@
 	background-color: #4267b2;
 	height: 80px;
 
-	@media (max-width: 792px) {
+	@media (max-width: 768px) {
 		padding: 0 30px;
 	}
 
 	@media (max-width: 576px) {
-		padding: 18px;
+		padding: 0 18px;
 	}
 
 	.container-header {
@@ -28,7 +28,7 @@
 			img:last-child {
 				height: 24px;
 			}
-			@media (max-width: 792px) {
+			@media (max-width: 768px) {
 				display: none;
 			}
 		}
@@ -38,7 +38,7 @@
 			padding: 0 12px;
 			max-width: 600px;
 
-			// @media (max-width: 792px) {
+			// @media (max-width: 768px) {
 			// 	display: none;
 			// }
 		}
