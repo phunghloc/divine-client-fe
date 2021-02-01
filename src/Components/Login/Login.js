@@ -32,17 +32,22 @@ import { AuthContext } from '../../Custom/context/AuthContext';
 
 const Login = (props) => {
 	const [activeTab, setActiveTab] = useState('0');
+	const [visibleModal, setVisibleModal] = useState(false);
 	const [errorSignUp, setErrorSignUp] = useState(false);
 	const [successSignUp, setSuccessSignUp] = useState(null);
 	const [errorLogin, setErrorLogin] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const { needLogin, setNeedLogin } = useContext(AuthContext);
+	const { needLogin, setNeedLogin, userData, login } = useContext(AuthContext);
 
 	useEffect(() => {
 		if (needLogin) {
 			setActiveTab('1');
 		}
 	}, [needLogin]);
+
+	useEffect(() => {
+		setVisibleModal(activeTab !== '0');
+	}, [activeTab]);
 
 	const submitLoginInfo = (form) => {
 		setSuccessSignUp(null);
@@ -51,7 +56,9 @@ const Login = (props) => {
 		axios
 			.post('/auth/login', form)
 			.then((res) => {
-				props.login(res.data);
+				setActiveTab('0');
+				login(res.data);
+				setLoading(false);
 			})
 			.catch((err) => {
 				setLoading(false);
@@ -101,23 +108,26 @@ const Login = (props) => {
 	);
 	return (
 		<>
-			<Dropdown
-				placement="bottomRight"
-				overlay={loginOverlay}
-				className="login"
-			>
-				<Button
-					className="login-btn"
-					size="large"
-					type="text"
-					icon={<UserDeleteOutlined />}
-					loading={loading}
+			{!userData && (
+				<Dropdown
+					placement="bottomRight"
+					overlay={loginOverlay}
+					className="login"
 				>
-					Đăng nhập
-				</Button>
-			</Dropdown>
+					<Button
+						className="login-btn desktop-screen"
+						size="large"
+						type="text"
+						icon={<UserDeleteOutlined />}
+						loading={loading}
+					>
+						Đăng nhập
+					</Button>
+				</Dropdown>
+			)}
+
 			<Modal
-				visible={activeTab !== '0'}
+				visible={visibleModal && !userData}
 				onCancel={() => {
 					setActiveTab('0');
 					setNeedLogin(false);
@@ -129,7 +139,11 @@ const Login = (props) => {
 				<Tabs activeKey={activeTab} onChange={setActiveTab} centered animated>
 					<Tabs.TabPane tab="Đăng nhập" key="1">
 						<Row>
-							<Col span={12} style={{ paddingRight: 30 }}>
+							<Col
+								md={12}
+								style={{ paddingRight: 30 }}
+								className="desktop-screen"
+							>
 								<h2>Đăng nhập</h2>
 								<p>
 									Đăng nhập để theo dõi đơn hàng, lưu danh sách sản phẩm yêu
@@ -138,7 +152,7 @@ const Login = (props) => {
 								<img src={LoginBanner} alt="Login Banner" />
 							</Col>
 
-							<Col span={12}>
+							<Col md={12} xs={24}>
 								{!!errorLogin && (
 									<Alert message={errorLogin} type="error" showIcon closable />
 								)}
@@ -220,7 +234,12 @@ const Login = (props) => {
 					</Tabs.TabPane>
 					<Tabs.TabPane tab="Tạo tài khoản" key="2">
 						<Row>
-							<Col span={12} style={{ paddingRight: 30 }}>
+							<Col
+								md={12}
+								xs={24}
+								style={{ paddingRight: 30 }}
+								className="desktop-screen"
+							>
 								<h2>Tạo tài khoản</h2>
 								<p>
 									Tạo tài khoản để theo dõi đơn hàng, lưu danh sách sản phẩm yêu
@@ -229,7 +248,7 @@ const Login = (props) => {
 								<img src={SignUpBanner} alt="Sign up banner" />
 							</Col>
 
-							<Col span={12}>
+							<Col md={12} xs={24}>
 								{!!errorSignUp && (
 									<Alert
 										message={errorSignUp}

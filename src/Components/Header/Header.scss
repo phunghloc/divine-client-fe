@@ -3,11 +3,7 @@
 	height: 80px;
 
 	@media (max-width: 768px) {
-		padding: 0 30px;
-	}
-
-	@media (max-width: 576px) {
-		padding: 0 18px;
+		padding: 0 12px;
 	}
 
 	.container-header {
@@ -27,20 +23,19 @@
 			}
 			img:last-child {
 				height: 24px;
+				@media (max-width: 992px) {
+					display: none;
+				}
 			}
-			@media (max-width: 768px) {
-				display: none;
-			}
+			// @media (max-width: 768px) {
+			// 	display: none;
+			// }
 		}
 
 		.search {
 			margin: auto;
 			padding: 0 12px;
 			max-width: 600px;
-
-			// @media (max-width: 768px) {
-			// 	display: none;
-			// }
 		}
 
 		.login-btn {
@@ -54,5 +49,28 @@
 			font-size: 16px;
 			color: white;
 		}
+	}
+}
+
+.menu-mobile-btn {
+	margin: auto;
+	padding-right: 0;
+	background-color: transparent;
+	border: none;
+	color: white;
+	display: none;
+	&:hover {
+		color: white;
+		background-color: transparent;
+	}
+	&:active {
+		color: white;
+		background-color: transparent;
+	}
+	svg {
+		font-size: 30px;
+	}
+	@media (max-width: 768px) {
+		display: block;
 	}
 }

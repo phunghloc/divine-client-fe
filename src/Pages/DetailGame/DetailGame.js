@@ -127,8 +127,6 @@ const DetailGame = (props) => {
 		? userData.cart.find((game) => game._id === gameId)
 		: false;
 
-	console.log(game);
-
 	if (game) {
 		content = (
 			<>

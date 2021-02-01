@@ -85,11 +85,13 @@
 			font-weight: 500;
 		}
 	}
-
-	@media (max-width: 768px) {
-		display: none;
-	}
 }
+
+// @media (max-width: 768px) {
+// 	.desktop-screen {
+// 		display: none;
+// 	}
+// }
 
 .user-menu {
 	min-width: 360px;
@@ -136,5 +138,18 @@
 			color: white;
 			font-size: 14px;
 		}
+	}
+}
+
+@media (max-width: 768px) {
+	.desktop-screen {
+		display: none;
+	}
+}
+
+.mobile-screen {
+	display: none;
+	@media (max-width: 768px) {
+		display: block;
 	}
 }

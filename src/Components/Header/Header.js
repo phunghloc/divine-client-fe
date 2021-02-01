@@ -7,12 +7,13 @@ import logoCircle from '../../assets/images/logo_divine_pure_white.png';
 
 import './Header.scss';
 import Login from '../Login/Login';
+import MenuDrawer from './MenuDrawer';
 import UserLogined from '../Login/UserLogined';
-import { AuthContext } from '../../Custom/context/AuthContext';
 import { useSearch } from '../../Custom/hooks/SearchHook';
+import { AuthContext } from '../../Custom/context/AuthContext';
 
 function Header(props) {
-	const auth = useContext(AuthContext);
+	const { userData } = useContext(AuthContext);
 	const {
 		searchGame,
 		setSearchValue,
@@ -54,7 +55,7 @@ function Header(props) {
 	return (
 		<Layout.Header className="header">
 			<div className="container-header">
-				<Link className="logo-link" to="/">
+				<Link className="logo-link desktop-screen" to="/">
 					<img src={logoCircle} alt="Logo Divine" />
 					<img src={logoFlat} alt="Logo Divine" />
 				</Link>
@@ -69,7 +70,9 @@ function Header(props) {
 						onChange={(event) => setSearchValue(event.target.value)}
 					/>
 				</Dropdown>
-				{auth.userData ? <UserLogined /> : <Login login={auth.login} />}
+				{!!userData && <UserLogined />}
+				<Login />
+				<MenuDrawer userData={userData} />
 			</div>
 		</Layout.Header>
 	);

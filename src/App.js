@@ -4,15 +4,17 @@ import { Switch, Route } from 'react-router-dom';
 
 import './App.scss';
 import axios from './axios-constain';
+import Header from './Components/Header/Header';
+import Footer from './Components/Footer/Footer';
+import Navbar from './Components/Navbar/Navbar';
+
 import page404 from './Pages/404/404';
 import Redeem from './Pages/Redeem/Redeem';
 import Account from './Pages/Account/Account';
 import EditAccount from './Pages/Account/Edit';
-import Header from './Components/Header/Header';
-import Footer from './Components/Footer/Footer';
-import Navbar from './Components/Navbar/Navbar';
 import Homepage from './Pages/Homepage/Homepage';
 import CartPage from './Pages/CartPage/CartPage';
+import Community from './Pages/Community/Community';
 import OrderPage from './Pages/OrderPage/OrderPage';
 import DetailGame from './Pages/DetailGame/DetailGame';
 import DetailOrder from './Pages/DetailOrder/DetailOrder';
@@ -54,6 +56,7 @@ function App() {
 					<Route path="/tai-khoan/:userId" component={Account} />
 					<Route path="/tai-khoan/" component={Account} />
 					<Route path="/doi-ma/" component={Redeem} />
+					<Route path="/cong-dong/" component={Community} />
 					<Route path="/don-hang/:orderId" component={DetailOrder} />
 					<Route path="/gio-hang" component={CartPage} />
 					<Route path="/" exact component={Homepage} />

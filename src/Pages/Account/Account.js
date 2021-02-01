@@ -9,7 +9,7 @@ import {
 	Image,
 	Statistic,
 	Spin,
-  Result,
+	Result,
 } from 'antd';
 import {
 	FieldTimeOutlined,
@@ -129,9 +129,11 @@ export default function Account(props) {
 											cover={<img alt={game.name} src={game.images[0].url} />}
 										>
 											<Card.Meta title={game.name} />
-											<div className="card-bottom">
-												<Button type="default">Chơi game</Button>
-											</div>
+											{IS_OWNER && (
+												<div className="card-bottom">
+													<Button type="default">Chơi game</Button>
+												</div>
+											)}
 										</Card>
 									</Link>
 								</Col>

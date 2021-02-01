@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Layout, Button, Row, Col, Card, Spin } from 'antd';
+import { Layout, Button, Row, Col, Card, Spin, Carousel, Image } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 
-// import Banner1 from '../../assets/images/banner1.png';
-// import Banner2 from '../../assets/images/banner2.png';
-// import Banner3 from '../../assets/images/banner3.png';
-// import Banner4 from '../../assets/images/banner4.png';
-// import Banner5 from '../../assets/images/banner5.png';
+import Banner1 from '../../assets/images/banner1.png';
+import Banner2 from '../../assets/images/banner2.png';
+import Banner3 from '../../assets/images/banner3.png';
+import Banner4 from '../../assets/images/banner4.png';
+import Banner5 from '../../assets/images/banner5.png';
 
 import './Homepage.scss';
 import axios from '../../axios-constain';
 import ErrorModal from '../../Components/ErrorModal/ErrorModal';
 
-// const carousel = [Banner1, Banner2, Banner3, Banner4, Banner5];
+const carousel = [Banner1, Banner2, Banner3, Banner4, Banner5];
 
 const Homepage = (props) => {
 	const [error, setError] = useState(null);
@@ -46,6 +46,18 @@ const Homepage = (props) => {
 				className="container content"
 				style={{ minHeight: '80vh' }}
 			>
+				<Carousel autoplay autoplaySpeed={8000} dots={false}>
+					{carousel.map((img, index) => (
+						<div key={index} style={{ textAlign: 'center' }}>
+							<Image
+								src={img}
+								alt={`img ${index}`}
+								style={{ margin: 'auto' }}
+								preview={false}
+							/>
+						</div>
+					))}
+				</Carousel>
 				<h2>Game mới</h2>
 				<Row gutter={[16, 16]}>
 					{newestGames.map((game) => {

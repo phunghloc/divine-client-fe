@@ -302,7 +302,7 @@ export default function Comments(props) {
 												Trả lời
 											</Button>,
 											props.userData &&
-												props.userData.userId === comment.userId._id && (
+												props.userData.userId === reply.userId._id && (
 													<Button
 														danger
 														type="link"

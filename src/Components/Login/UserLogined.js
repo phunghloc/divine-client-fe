@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { Button, Badge, Menu, Dropdown } from 'antd';
+import React, { useContext, useState, useEffect } from 'react';
+import { Button, Badge, Menu, Dropdown, Avatar } from 'antd';
 import { BellOutlined, WalletTwoTone } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import OpenSocket from 'socket.io-client';
 
 import './Login.scss';
 import Cart from '../Cart/Cart';
@@ -11,6 +12,19 @@ import { AuthContext } from '../../Custom/context/AuthContext';
 const UserLogined = () => {
 	const [visibleCashForm, setVisibleCashForm] = useState(false);
 	const { userData, logout } = useContext(AuthContext);
+
+	useEffect(() => {
+		const socket = OpenSocket(process.env.REACT_APP_BASE_URL, {
+			auth: {
+				userId: userData.userId,
+			},
+		});
+		console.log('socket in header ', socket);
+		return () => {
+			socket.emit('logout');
+		};
+	}, [userData.userId]);
+
 	const menu = <Menu className="user-menu"></Menu>;
 	const menuAccount = (
 		<Menu className="user-menu">
@@ -49,7 +63,7 @@ const UserLogined = () => {
 	);
 
 	return (
-		<div className="user-group">
+		<div className="user-group desktop-screen">
 			<Dropdown overlay={menu} placement="bottomCenter">
 				<Button type="link" size="large">
 					<Badge count={1}>
@@ -59,6 +73,7 @@ const UserLogined = () => {
 			</Dropdown>
 			<Dropdown overlay={menuAccount} placement="bottomCenter">
 				<Button type="link" size="large" className="btn-link">
+					<Avatar src={userData.avatar} />
 					{userData.name}
 				</Button>
 			</Dropdown>
