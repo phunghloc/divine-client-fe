@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Layout, List } from 'antd';
+import { Layout, List, Modal } from 'antd';
 import moment from 'moment';
 import 'moment/locale/vi';
 import OpenSocket from 'socket.io-client';
@@ -9,12 +9,14 @@ import Post from './components/Post';
 import CreatePost from './components/CreatePost';
 import axios from '../../axios-constain';
 import { AuthContext } from '../../Custom/context/AuthContext';
+import Skeleton from './components/Skeleton';
 
 moment.locale('vi');
 
 export default function Community() {
 	const { userData } = useContext(AuthContext);
 	const [posts, setPosts] = useState([]);
+	const [loadingPosts, setLoadingPosts] = useState(false);
 
 	useEffect(() => {
 		const socket = OpenSocket(process.env.REACT_APP_BASE_URL);
@@ -71,6 +73,7 @@ export default function Community() {
 	useEffect(() => {
 		const timeout = !!userData ? 10 : 0;
 		setTimeout(() => {
+			setLoadingPosts(true);
 			let config = {};
 			if (!!userData) {
 				const token = localStorage.getItem('token');
@@ -87,6 +90,9 @@ export default function Community() {
 				})
 				.catch((err) => {
 					console.log(err);
+				})
+				.finally(() => {
+					setLoadingPosts(false);
 				});
 		}, timeout);
 	}, [userData]);
@@ -101,23 +107,68 @@ export default function Community() {
 		});
 	};
 
+	const openErrorModal = (
+		textError = 'Có lỗi chưa xác định xảy ra. Vui lòng reload lại trang và thử lại sau!',
+	) => {
+		Modal.error({
+			title: 'Có lỗi xảy ra',
+			content: textError,
+			okText: 'Xác nhận',
+		});
+	};
+
+	const editCommentHandler = (postId, commentId, newComment) => {
+		setPosts((posts) => {
+			const newPosts = [...posts];
+			const postIndex = newPosts.findIndex((p) => p._id === postId);
+			if (postIndex >= 0) {
+				const commentIndex = newPosts[postIndex].comments.findIndex(
+					(c) => c._id === commentId,
+				);
+				if (commentIndex >= 0) {
+					newPosts[postIndex].comments[commentIndex].comment = newComment;
+				}
+			}
+			return newPosts;
+		});
+	};
+
+	const loadMoreCommentHandler = (postId, additionalComment) => {
+		setPosts((posts) => {
+			const newPosts = [...posts];
+			const postIndex = newPosts.findIndex((post) => post._id === postId);
+			if (postIndex >= 0) {
+				newPosts[postIndex].comments.unshift(...additionalComment);
+			}
+
+			return newPosts;
+		});
+	};
+
 	return (
 		<Layout.Content className="container community">
-			<CreatePost userData={userData} />
+			<CreatePost userData={userData} openErrorModal={openErrorModal} />
 
-			<List
-				itemLayout="vertical"
-				size="large"
-				dataSource={posts}
-				renderItem={(post) => (
-					<Post
-						key={post._id}
-						{...post}
-						userData={userData}
-						changeLikeStatus={changeLikeStatus}
-					/>
-				)}
-			/>
+			{!loadingPosts ? (
+				<List
+					itemLayout="vertical"
+					size="large"
+					dataSource={posts}
+					renderItem={(post) => (
+						<Post
+							key={post._id}
+							{...post}
+							userData={userData}
+							changeLikeStatus={changeLikeStatus}
+							openErrorModal={openErrorModal}
+							editCommentHandler={editCommentHandler}
+							loadMoreCommentHandler={loadMoreCommentHandler}
+						/>
+					)}
+				/>
+			) : (
+				<Skeleton />
+			)}
 		</Layout.Content>
 	);
 }

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Avatar, Button, Comment, Input, Image, Spin, Modal } from 'antd';
+import { Avatar, Button, Comment, Input, Image, Spin } from 'antd';
 import {
 	SnippetsOutlined,
 	FileImageOutlined,
@@ -16,21 +16,13 @@ export default function CreatePost(props) {
 	const inputRef = useRef();
 	const inputFileRef = useRef();
 
-	const openErrorModal = (textError = 'Có lỗi xảy ra.') => {
-		Modal.error({
-			title: 'Có lỗi xảy ra',
-			content: textError,
-			okText: 'Xác nhận',
-		});
-	};
-
 	const changeFile = (e) => {
 		if (!e.target.files.length) return;
 		const fileTailList = ['image/jpeg', 'image/jpg', 'image/png'];
 		if (fileTailList.includes(e.target.files[0].type)) {
 			return setFile(e.target.files);
 		}
-		openErrorModal('Chỉ chấp nhận file png, jpg, jpeg!');
+		props.openErrorModal('Chỉ chấp nhận file png, jpg, jpeg!');
 	};
 
 	const clearFileHandler = () => {
@@ -62,7 +54,7 @@ export default function CreatePost(props) {
 			})
 			.catch((err) => {
 				const message = err.response ? err.response.data.message : null;
-				openErrorModal(message);
+				props.openErrorModal(message);
 			})
 			.finally(() => {
 				setSpinning(false);

@@ -33,6 +33,8 @@ export default function CommentEditor(props) {
 			})
 			.catch((err) => {
 				setSubmitting(false);
+				const errorText = err.response ? err.response.data.message : null;
+				props.openErrorModal(errorText);
 				console.log(err);
 			});
 	};

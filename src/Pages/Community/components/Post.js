@@ -30,6 +30,7 @@ const IconText = ({ icon, text }) => (
 
 export default function Post(props) {
 	const [loadingLike, setLoadingLike] = useState(false);
+	const [loadingMoreComment, setLoadingMoreComment] = useState(false);
 	const [clickRef, setClickRef] = useState(null);
 
 	const likePost = (postId) => {
@@ -45,7 +46,8 @@ export default function Post(props) {
 				props.changeLikeStatus(postId, likedThisPost, likes);
 			})
 			.catch((err) => {
-				console.log(err);
+				const content = err.response ? err.response.data.message : null;
+				props.openErrorModal(content);
 			})
 			.finally(() => {
 				setLoadingLike(false);
@@ -69,14 +71,6 @@ export default function Post(props) {
 		});
 	};
 
-	const openErrorModal = (content = "Không thể thực hiện thao tác") => {
-		Modal.error({
-			title: "Có lỗi xảy ra.",
-			content,
-			okText: "Xác nhận",
-		})
-	}
-
 	const deleteCommentHandler = (postId, commentId) => {
 		const URL = `/posts/delete/${postId}/${commentId || ''}`;
 		const token = localStorage.getItem('token');
@@ -91,11 +85,30 @@ export default function Post(props) {
 			})
 			.catch((err) => {
 				const content = err.response ? err.response.data.message : null;
-				openErrorModal(content)
+				props.openErrorModal(content);
 			})
 			.finally(() => {
 				loadingMessage();
 			});
+	};
+
+	const loadMoreCommentHandler = () => {
+		setLoadingMoreComment(true);
+		axios
+			.get(`/posts/loadmore/${props._id}/${props.comments[0]._id}`)
+			.then((res) => {
+				props.loadMoreCommentHandler(props._id, res.data.comments);
+			})
+			.catch((err) => {
+				props.openErrorModal();
+			})
+			.finally(() => {
+				setLoadingMoreComment(false);
+			});
+	};
+
+	const editPostHandler = () => {
+		console.log('edit post');
 	};
 
 	return (
@@ -134,7 +147,7 @@ export default function Post(props) {
 				</li>
 			</ul>
 
-			{!!props.userData && (
+			{!!props.userData ? (
 				<ul className="ulity-btn-group">
 					<li>
 						<Button
@@ -144,7 +157,7 @@ export default function Post(props) {
 							className={props.likedThisPost ? 'liked' : ''}
 							icon={<LikeFilled style={{ fontSize: 18 }} />}
 						>
-							{!props.likedThisPost ? 'Thích' : 'Bỏ thích'}
+							{!props.likedThisPost ? 'Thích' : 'Đã thích'}
 						</Button>
 					</li>
 					<li>
@@ -157,9 +170,22 @@ export default function Post(props) {
 						</Button>
 					</li>
 				</ul>
+			) : (
+				<Divider style={{ marginBottom: 12 }} />
 			)}
 
-			{!props.userData && <Divider />}
+			{props.comments.length < props.commentsCount && (
+				<div className="loadmore-btn">
+					<Button
+						type="link"
+						size="small"
+						onClick={loadMoreCommentHandler}
+						loading={loadingMoreComment}
+					>
+						Tải thêm bình luận
+					</Button>
+				</div>
+			)}
 
 			{props.comments.map((comment) => (
 				<CommentInPost
@@ -168,6 +194,8 @@ export default function Post(props) {
 					postId={props._id}
 					uid={props.userData ? props.userData.userId : null}
 					delete={openConfirmDeleteCommentHandler}
+					openErrorModal={props.openErrorModal}
+					editCommentHandler={props.editCommentHandler}
 				/>
 			))}
 			{!!props.userData && (
@@ -175,10 +203,15 @@ export default function Post(props) {
 					userData={props.userData}
 					clickRef={clickRef}
 					urlPost={`/posts/${props._id}/comment`}
+					openErrorModal={props.openErrorModal}
 				/>
 			)}
 			{!!props.userData && props.userData.userId === props.userId._id && (
-				<UlityBtn delete={openConfirmDeleteCommentHandler} postId={props._id} />
+				<UlityBtn
+					postId={props._id}
+					edit={editPostHandler}
+					delete={openConfirmDeleteCommentHandler}
+				/>
 			)}
 		</List.Item>
 	);

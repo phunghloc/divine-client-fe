@@ -7,9 +7,9 @@ import {
 export const navlinks = [
 	{ link: '/', exact: true, title: 'Trang chủ', icon: <HomeOutlined /> },
 	{
-		link: '/tat-ca-game',
+		link: '/doi-ma',
 		exact: false,
-		title: 'Tất cả game',
+		title: 'Keygame',
 		icon: <TrophyOutlined />,
 	},
 	{

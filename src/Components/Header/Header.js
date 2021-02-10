@@ -59,7 +59,7 @@ function Header(props) {
 					<img src={logoCircle} alt="Logo Divine" />
 					<img src={logoFlat} alt="Logo Divine" />
 				</Link>
-				<Dropdown overlay={menu}>
+				<Dropdown overlay={menu} trigger={['click']}>
 					<Input.Search
 						placeholder="Nhập để tìm kiếm sản phẩm"
 						allowClear

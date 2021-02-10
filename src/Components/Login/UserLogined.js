@@ -64,7 +64,7 @@ const UserLogined = () => {
 
 	return (
 		<div className="user-group desktop-screen">
-			<Dropdown overlay={menu} placement="bottomCenter">
+			<Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
 				<Button type="link" size="large">
 					<Badge count={1}>
 						<BellOutlined className="notify-button" />

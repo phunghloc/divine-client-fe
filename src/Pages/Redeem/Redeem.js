@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
 	Layout,
 	Row,
@@ -11,13 +11,15 @@ import {
 } from 'antd';
 
 import './Redeem.scss';
-import logo from '../../assets/images/logo_divine_pure_white.png';
 import axios from '../../axios-constain';
+import { AuthContext } from '../../Custom/context/AuthContext';
+import logo from '../../assets/images/logo_divine_pure_white.png';
 
 export default function Redeem(props) {
-	const [keygame, setKeygame] = useState(null);
 	const [input, setInput] = useState('');
+	const [keygame, setKeygame] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const { userData } = useContext(AuthContext);
 
 	const openSuccessModalHandler = () => {
 		Modal.success({
@@ -86,8 +88,8 @@ export default function Redeem(props) {
 			.finally(() => {
 				setLoading(false);
 			});
-  };
-  
+	};
+
 	return (
 		<Layout.Content className="container redeem">
 			<div className="redeem-container">
@@ -136,8 +138,11 @@ export default function Redeem(props) {
 								type="primary"
 								size="large"
 								onClick={activeGameByKeyHandler}
+								disabled={!userData}
 							>
-								Kích hoạt keygame
+								{!userData
+									? 'Đăng nhập để kích hoạt game'
+									: 'Kích hoạt keygame'}
 							</Button>
 						)}
 					</Col>
