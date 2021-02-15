@@ -1,31 +1,17 @@
 import { useState, useCallback } from 'react';
-// import OpenSocket from 'socket.io-client';
 
 export const useAuth = () => {
+	//TODO userData = {name, balance, _id, avatar, notifications: {unread, list}}
 	const [userData, setUserData] = useState(null);
 	const [needLogin, setNeedLogin] = useState(false);
-	// const [socket, setSocket] = useState(null);
+	const [notificationsCount, setNotificationsCount] = useState(0);
 
-	// useEffect(() => {
-	// 	setSocket(OpenSocket(process.env.REACT_APP_BASE_URL));
-	// }, []);
-
-	// useEffect(() => {
-	// 	if (socket) {
-	// 		if (userData) {
-	// 			console.log('login success')
-	// 			socket.emit('login success', userData.userId);
-	// 		} else {
-	// 			socket.emit('logout');
-	// 		}
-	// 	}
-	// }, [userData, socket]);
-
-	const login = useCallback((userData) => {
+	const login = useCallback((data) => {
 		setUserData({
-			...userData,
+			...data,
 		});
-		if (userData.token) localStorage.setItem('token', userData.token);
+		setNotificationsCount(data.notifications.newNotifications);
+		if (data.token) localStorage.setItem('token', data.token);
 	}, []);
 
 	const logout = useCallback(() => {
@@ -40,8 +26,14 @@ export const useAuth = () => {
 	}, []);
 
 	const updateBalance = useCallback((newBalance) => {
-		setUserData((preCart) => {
-			return { ...preCart, balance: newBalance };
+		setUserData((userData) => {
+			return { ...userData, balance: newBalance };
+		});
+	}, []);
+
+	const updateAvatar = useCallback((newAvatar) => {
+		setUserData((oldData) => {
+			return { ...oldData, avatar: newAvatar };
 		});
 	}, []);
 
@@ -53,6 +45,8 @@ export const useAuth = () => {
 		needLogin,
 		setNeedLogin,
 		updateBalance,
-		// socket,
+		notificationsCount,
+		setNotificationsCount,
+		updateAvatar,
 	};
 };

@@ -28,6 +28,7 @@ const Homepage = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [newestGames, setNewestGames] = useState([]);
 	useEffect(() => {
+		window.scrollTo(0, 0);
 		setLoading(true);
 		axios
 			.get('/')

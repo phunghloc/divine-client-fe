@@ -192,15 +192,13 @@ export default function Comments(props) {
 				{ headers: { Authorization: `Bearer ${token}` } },
 			)
 			.then((res) => {
-				console.log(res);
 				setReply({ position: null, value: '' });
 
 				const newGame = { ...props.game };
-
 				const commentIndex = newGame.comments.findIndex(
 					(comment) => comment._id === commentId,
 				);
-				console.log(commentIndex);
+
 				newGame.comments[commentIndex].replies.push({
 					...res.data.reply,
 					userId: {
@@ -209,6 +207,7 @@ export default function Comments(props) {
 						_id: props.userData.userId,
 					},
 				});
+				
 				props.setGame(newGame);
 			})
 			.catch((err) => {

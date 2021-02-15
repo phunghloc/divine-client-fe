@@ -1,17 +1,80 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Button, Badge, Menu, Dropdown, Avatar } from 'antd';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
+import { Button, Badge, Menu, Dropdown, Avatar, notification } from 'antd';
 import { BellOutlined, WalletTwoTone } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import OpenSocket from 'socket.io-client';
 
 import './Login.scss';
 import Cart from '../Cart/Cart';
 import CashFormModal from './CashFormModal';
 import { AuthContext } from '../../Custom/context/AuthContext';
+import axios from '../../axios-constain';
+import NotificationsDropDown from './NotificationsDropDown';
 
-const UserLogined = () => {
+const UserLogined = (props) => {
 	const [visibleCashForm, setVisibleCashForm] = useState(false);
-	const { userData, logout } = useContext(AuthContext);
+	const [loadingNotifications, setLoadingNotifications] = useState(false);
+	const [notifications, setNotifications] = useState([]);
+	const [hasFirstFetch, setHasFirstFetch] = useState(false);
+	const [visibleNoti, setVisibleNoti] = useState(false);
+	const {
+		userData,
+		logout,
+		notificationsCount,
+		setNotificationsCount,
+	} = useContext(AuthContext);
+
+
+	const openNotification = useCallback((type, data) => {
+		let action = 'thích bài đăng';
+		let description = `"${data.content}..."`;
+		let url;
+
+		switch (type) {
+			case 'like post':
+				action = 'thích bài đăng của bạn.';
+				description = `"${data.content}..."`;
+				url = `/cong-dong/${data.postId}`;
+				break;
+
+			case 'comment post':
+				action = 'bình luận bài đăng bạn đang theo dõi.';
+				description = `"${data.content}..."`;
+				url = `/cong-dong/${data.postId}`;
+				break;
+
+			case 'reply game':
+				action = 'trả lời bình luận trong game bạn đang theo dõi.';
+				description = `"${data.game.name}"`;
+				url = `/detail-game/${data.game.gameId}`;
+				break;
+
+			default:
+				break;
+		}
+
+		notification.open({
+			message: (
+				<span>
+					<strong>{data.user.name}</strong> đã {action}
+				</span>
+			),
+			description,
+			placement: 'bottomLeft',
+			icon: <Avatar alt="avatar user" src={data.user.avatar} />,
+			duration: 10,
+			key: Math.random(),
+			closeIcon: null,
+			style: {
+				borderRadius: 5,
+				boxShadow: '0 0 20px #ccc',
+				cursor: 'pointer',
+			},
+			onClick() {
+				props.history.push(url);
+			},
+		});
+	}, [props]);
 
 	useEffect(() => {
 		const socket = OpenSocket(process.env.REACT_APP_BASE_URL, {
@@ -19,13 +82,75 @@ const UserLogined = () => {
 				userId: userData.userId,
 			},
 		});
-		console.log('socket in header ', socket);
+
+		socket.on('like post', (likeData) => {
+			openNotification('like post', likeData);
+
+			setNotificationsCount((oldCount) => oldCount + 1);
+		});
+
+		socket.on('comment post', (postData) => {
+			openNotification('comment post', postData);
+
+			setNotificationsCount((oldCount) => oldCount + 1);
+		});
+
+		socket.on('reply game', (replyData) => {
+			openNotification('reply game', replyData);
+
+			setNotificationsCount((oldCount) => oldCount + 1);
+		});
+
 		return () => {
 			socket.emit('logout');
 		};
-	}, [userData.userId]);
+	}, [userData.userId, setNotificationsCount, openNotification]);
 
-	const menu = <Menu className="user-menu"></Menu>;
+	const openNotificationsDropdown = () => {
+		// Nếu có notifications mới hoặc chưa fetch lần nào thì sẽ fetch notifications
+		if (!visibleNoti) {
+			if (userData.notifications.newNotifications || !hasFirstFetch) {
+				setLoadingNotifications(true);
+				setNotifications([]);
+				const token = localStorage.getItem('token');
+				axios
+					.get('/auth/get-notifications', {
+						headers: { Authorization: `Bearer ${token}` },
+					})
+					.then((res) => {
+						setHasFirstFetch(true);
+						setNotifications(res.data.notifications.reverse());
+					})
+					.catch((err) => {
+						console.log(err);
+					})
+					.finally(() => {
+						setLoadingNotifications(false);
+					});
+			}
+		}
+		setVisibleNoti((pre) => !pre);
+	};
+
+	const markAsReadHandler = (index, url) => {
+		props.history.push(url);
+
+		if (notifications[index].hasRead) return;
+
+		let notifyId;
+		setNotifications((notifications) => {
+			const newNotifications = [...notifications];
+			newNotifications[index].hasRead = true;
+			notifyId = newNotifications[index]._id;
+			return newNotifications;
+		});
+
+		const token = localStorage.getItem('token');
+		axios.get(`/auth/mark-as-read-notification/${notifyId}`, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
+	};
+
 	const menuAccount = (
 		<Menu className="user-menu">
 			<Menu.Item className="user-menu-balance">
@@ -64,16 +189,29 @@ const UserLogined = () => {
 
 	return (
 		<div className="user-group desktop-screen">
-			<Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
-				<Button type="link" size="large">
-					<Badge count={1}>
+			<div className="notify-btn">
+				<Button type="link" size="large" onClick={openNotificationsDropdown}>
+					<Badge count={notificationsCount}>
 						<BellOutlined className="notify-button" />
 					</Badge>
 				</Button>
-			</Dropdown>
+				{visibleNoti && (
+					<NotificationsDropDown
+						loading={loadingNotifications}
+						notifications={notifications}
+						setVisibleNoti={setVisibleNoti}
+						markAsReadHandler={markAsReadHandler}
+						setNotificationsCount={setNotificationsCount}
+					/>
+				)}
+			</div>
 			<Dropdown overlay={menuAccount} placement="bottomCenter">
-				<Button type="link" size="large" className="btn-link">
-					<Avatar src={userData.avatar} />
+				<Button
+					type="link"
+					size="large"
+					className="btn-link"
+					icon={<Avatar src={userData.avatar} />}
+				>
 					{userData.name}
 				</Button>
 			</Dropdown>
@@ -86,4 +224,4 @@ const UserLogined = () => {
 	);
 };
 
-export default UserLogined;
+export default withRouter(UserLogined);

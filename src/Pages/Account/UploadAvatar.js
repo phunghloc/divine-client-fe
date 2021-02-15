@@ -1,13 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Button, Image } from 'antd';
 import { UploadOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
-import { withRouter } from 'react-router-dom';
 
 import axios from '../../axios-constain';
+import { AuthContext } from '../../Custom/context/AuthContext';
 
 export default withRouter(function UploadAvatar(props) {
 	const inputFileRef = useRef();
 	const [file, setFile] = useState(null);
+	const { updateAvatar } = useContext(AuthContext);
 
 	const changeFile = (e) => {
 		if (!e.target.files.length) return;
@@ -40,6 +42,7 @@ export default withRouter(function UploadAvatar(props) {
 				},
 			})
 			.then((res) => {
+				updateAvatar(res.data.avatar);
 				props.openSuccessModal(
 					'Cập nhật ảnh đại diện thành công, quay lại trang cá nhân và xem kết quả nhé!',
 				);

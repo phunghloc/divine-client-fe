@@ -1,22 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Layout, List, Modal } from 'antd';
+import OpenSocket from 'socket.io-client';
 import moment from 'moment';
 import 'moment/locale/vi';
-import OpenSocket from 'socket.io-client';
 
 import './Community.scss';
 import Post from './components/Post';
-import CreatePost from './components/CreatePost';
 import axios from '../../axios-constain';
-import { AuthContext } from '../../Custom/context/AuthContext';
 import Skeleton from './components/Skeleton';
+import CreatePost from './components/CreatePost';
+import { AuthContext } from '../../Custom/context/AuthContext';
 
 moment.locale('vi');
 
-export default function Community() {
+export default function Community(props) {
 	const { userData } = useContext(AuthContext);
 	const [posts, setPosts] = useState([]);
 	const [loadingPosts, setLoadingPosts] = useState(false);
+	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		const socket = OpenSocket(process.env.REACT_APP_BASE_URL);
@@ -34,6 +36,7 @@ export default function Community() {
 						...response,
 						commentDate: Date.now(),
 					});
+					newPosts[postIndex].commentsCount++;
 				}
 
 				return newPosts;
@@ -71,6 +74,7 @@ export default function Community() {
 	}, []);
 
 	useEffect(() => {
+		const postId = props.match.params.postId;
 		const timeout = !!userData ? 10 : 0;
 		setTimeout(() => {
 			setLoadingPosts(true);
@@ -83,19 +87,26 @@ export default function Community() {
 					},
 				};
 			}
+
+			let url = '/posts/';
+			if (postId) {
+				url += postId;
+			}
+
 			axios
-				.get('/posts', config)
+				.get(url, config)
 				.then((res) => {
 					setPosts(res.data.posts);
 				})
 				.catch((err) => {
 					console.log(err);
+					setNotFound(err.response.status);
 				})
 				.finally(() => {
 					setLoadingPosts(false);
 				});
 		}, timeout);
-	}, [userData]);
+	}, [userData, props.match.params.postId]);
 
 	const changeLikeStatus = (postId, likedThisPost, likes) => {
 		setPosts((prev) => {
@@ -145,9 +156,13 @@ export default function Community() {
 		});
 	};
 
+	if (notFound === 404) return <Redirect to="/404" />;
+
 	return (
 		<Layout.Content className="container community">
-			<CreatePost userData={userData} openErrorModal={openErrorModal} />
+			{!props.match.params.postId && (
+				<CreatePost userData={userData} openErrorModal={openErrorModal} />
+			)}
 
 			{!loadingPosts ? (
 				<List

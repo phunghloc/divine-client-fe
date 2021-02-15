@@ -61,8 +61,12 @@ const Login = (props) => {
 				setLoading(false);
 			})
 			.catch((err) => {
+				console.log(err);
 				setLoading(false);
-				setErrorLogin(err.response.data.message);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi xảy ra!';
+				setErrorLogin(errorText);
 			});
 	};
 

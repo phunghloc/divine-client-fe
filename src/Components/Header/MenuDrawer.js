@@ -83,6 +83,13 @@ export default function MenuDrawer(props) {
 						</Menu.Item>
 					)}
 					{!!userData && (
+						<Menu.Item
+							icon={<Badge count={userData.notifications.unread} showZero />}
+						>
+							<Link to="/">Thông báo</Link>
+						</Menu.Item>
+					)}
+					{!!userData && (
 						<Menu.SubMenu
 							key="sub2"
 							icon={<Avatar src={userData.avatar} alt="avatar" />}

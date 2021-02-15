@@ -141,7 +141,7 @@ export default function Post(props) {
 				<li>
 					<IconText
 						icon={MessageOutlined}
-						text={props.comments.length}
+						text={props.commentsCount}
 						key="list-vertical-message"
 					/>
 				</li>

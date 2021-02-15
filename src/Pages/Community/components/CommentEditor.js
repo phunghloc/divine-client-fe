@@ -27,7 +27,6 @@ export default function CommentEditor(props) {
 				},
 			)
 			.then((res) => {
-				console.log(res);
 				setComment('');
 				setSubmitting(false);
 			})

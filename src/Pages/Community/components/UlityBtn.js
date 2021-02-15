@@ -8,8 +8,12 @@ export default function UlityBtn(props) {
 			placement="bottomRight"
 			overlay={
 				<Menu>
-					<Menu.Item onClick={props.edit}>
-						<Button type="text" icon={<EditOutlined />}>
+					<Menu.Item onClick={props.edit} disabled={!props.commentId}>
+						<Button
+							type="text"
+							icon={<EditOutlined />}
+							disabled={!props.commentId}
+						>
 							Chỉnh sửa
 						</Button>
 					</Menu.Item>

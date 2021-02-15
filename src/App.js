@@ -56,6 +56,7 @@ function App() {
 					<Route path="/tai-khoan/:userId" component={Account} />
 					<Route path="/tai-khoan/" component={Account} />
 					<Route path="/doi-ma/" component={Redeem} />
+					<Route path="/cong-dong/:postId" component={Community} />
 					<Route path="/cong-dong/" component={Community} />
 					<Route path="/don-hang/:orderId" component={DetailOrder} />
 					<Route path="/gio-hang" component={CartPage} />
