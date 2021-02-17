@@ -21,9 +21,10 @@ export default function ChangePassword(props) {
 			})
 			.catch((err) => {
 				console.log(err);
-				if (err.response) {
-					props.openErrorModal(err.response.data.message);
-				}
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				props.openErrorModal(errorText);
 			})
 			.finally(() => {
 				props.setLoadingWhenAction(false);

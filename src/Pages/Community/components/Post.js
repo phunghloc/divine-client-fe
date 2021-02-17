@@ -124,7 +124,11 @@ export default function Post(props) {
 				title={
 					<Link to={`/tai-khoan/${props.userId._id}`}>{props.userId.name}</Link>
 				}
-				description={<Link to="/">{moment(props.createdAt).fromNow()}</Link>}
+				description={
+					<Link to={`/cong-dong/${props._id}`}>
+						{moment(props.createdAt).fromNow()}
+					</Link>
+				}
 			/>
 			<p>{props.content}</p>
 			{!!props.images.length && (

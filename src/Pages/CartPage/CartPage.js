@@ -48,7 +48,10 @@ export default function CartPage() {
 				})
 				.catch((err) => {
 					console.log(err);
-					setError(err.response.data.message);
+					const errorText = err.response
+						? err.response.data.message
+						: 'Có lỗi không xác định xảy ra!';
+					setError(errorText);
 				})
 				.finally(() => {
 					setLoadingGetCart(false);
@@ -80,7 +83,10 @@ export default function CartPage() {
 			})
 			.catch((err) => {
 				console.log(err);
-				setError(err.response.data.message);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				setError(errorText);
 			})
 			.finally(() => {
 				setLoading(false);
@@ -108,7 +114,10 @@ export default function CartPage() {
 			})
 			.catch((err) => {
 				console.log(err);
-				setError(err.response.data.message);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				setError(errorText);
 			})
 			.finally(() => {
 				setLoading(false);

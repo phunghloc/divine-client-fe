@@ -51,7 +51,11 @@ export default function CashFormModal(props) {
 				updateBalance(res.data.balance);
 			})
 			.catch((err) => {
-				setError(err.response.data.message);
+				console.log(err);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				setError(errorText);
 			})
 			.finally(() => {
 				setLoadingFetchCash(false);

@@ -55,8 +55,11 @@ export default function Redeem(props) {
 				setKeygame(res.data.keygame);
 			})
 			.catch((err) => {
-				console.log(err.response);
-				if (err.response) openErrorModalHandler(err.response.data.message);
+				console.log(err);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				openErrorModalHandler(errorText);
 			})
 			.finally(() => {
 				setLoading(false);
@@ -83,7 +86,10 @@ export default function Redeem(props) {
 			})
 			.catch((err) => {
 				console.log(err);
-				if (err.response) openErrorModalHandler(err.response.data.message);
+				const errorText = err.response
+					? err.response.data.message
+					: 'Có lỗi không xác định xảy ra!';
+				if (err.response) openErrorModalHandler(errorText);
 			})
 			.finally(() => {
 				setLoading(false);

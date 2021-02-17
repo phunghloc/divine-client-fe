@@ -6,7 +6,7 @@
 		box-shadow: 0 0 20px #ccc;
 		.ant-table-thead {
 			th {
-				background-color: #4267b2;
+				background-color: var(--primary-color);
 				color: white;
 			}
 		}
