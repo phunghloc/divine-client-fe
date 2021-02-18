@@ -63,6 +63,9 @@
 	border: none;
 	color: white;
 	display: none;
+	svg {
+		color: white;
+	}
 	&:hover {
 		color: white;
 		background-color: transparent;

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Divider, Layout, List, Modal } from 'antd';
+import { Redirect } from 'react-router-dom';
+import { Layout, List, Modal } from 'antd';
 import OpenSocket from 'socket.io-client';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import moment from 'moment';
 import 'moment/locale/vi';
 
@@ -9,17 +9,15 @@ import './Community.scss';
 import Post from './components/Post';
 import axios from '../../axios-constain';
 import Skeleton from './components/Skeleton';
-import CreatePost from './components/CreatePost';
 import { AuthContext } from '../../Custom/context/AuthContext';
 
 moment.locale('vi');
 
-export default function Community(props) {
+export default function OnePost(props) {
 	const { userData } = useContext(AuthContext);
 	const [posts, setPosts] = useState([]);
-	const [lastPostId, setLastPostId] = useState(null);
+	const [notFound, setNotFound] = useState(false);
 	const [, setTimer] = useState(null);
-	const [hasMore, setHasMore] = useState(true);
 
 	useEffect(() => {
 		const socket = OpenSocket(process.env.REACT_APP_BASE_URL);
@@ -78,22 +76,26 @@ export default function Community(props) {
 		};
 	}, []);
 
-	const fetchPosts = useCallback((url, config = {}, page = 1) => {
-		axios
-			.get(url, config)
-			.then((res) => {
-				setPosts((posts) => {
-					if (res.data.posts.length < 2) {
-						setHasMore(false);
-					}
-					return posts.concat(res.data.posts);
+	const fetchPosts = useCallback(
+		(url, config = {}, page = 1) => {
+			const postId = props.match.params.postId;
+			axios
+				.get(url, config)
+				.then((res) => {
+					setPosts((posts) => {
+						if (postId) {
+							return res.data.posts;
+						}
+
+						return posts.concat(res.data.posts);
+					});
+				})
+				.catch((err) => {
+					setNotFound(err.response.status);
 				});
-			})
-			.catch((err) => {
-				const errorText = err.response ? err.response.data.message : null;
-				openErrorModal(errorText);
-			});
-	}, []);
+		},
+		[props.match.params.postId],
+	);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -101,6 +103,7 @@ export default function Community(props) {
 	}, []);
 
 	useEffect(() => {
+		const postId = props.match.params.postId;
 		setTimer((timer) => {
 			clearInterval(timer);
 			return setTimeout(() => {
@@ -116,12 +119,14 @@ export default function Community(props) {
 					};
 				}
 
-				if (lastPostId) url += `?lastPostId=${lastPostId}`;
+				if (postId) {
+					url += postId;
+				}
 
 				fetchPosts(url, config);
 			}, 50);
 		});
-	}, [fetchPosts, lastPostId]);
+	}, [props.match.params.postId, fetchPosts]);
 
 	const changeLikeStatus = (postId, likedThisPost, likes) => {
 		setPosts((prev) => {
@@ -171,36 +176,29 @@ export default function Community(props) {
 		});
 	};
 
+	if (notFound === 404) return <Redirect to="/404" />;
+
 	return (
 		<Layout.Content className="container community">
-			<CreatePost userData={userData} openErrorModal={openErrorModal} />
 			{!posts.length ? (
 				<Skeleton />
 			) : (
-				<InfiniteScroll
-					dataLength={posts.length}
-					next={() => setLastPostId((page) => posts[posts.length - 1]._id)}
-					hasMore={hasMore}
-					loader={<Skeleton />}
-					endMessage={<Divider>Đã hết bài đăng</Divider>}
-				>
-					<List
-						itemLayout="vertical"
-						size="large"
-						dataSource={posts}
-						renderItem={(post) => (
-							<Post
-								key={post._id}
-								{...post}
-								userData={userData}
-								changeLikeStatus={changeLikeStatus}
-								openErrorModal={openErrorModal}
-								editCommentHandler={editCommentHandler}
-								loadMoreCommentHandler={loadMoreCommentHandler}
-							/>
-						)}
-					/>
-				</InfiniteScroll>
+				<List
+					itemLayout="vertical"
+					size="large"
+					dataSource={posts}
+					renderItem={(post) => (
+						<Post
+							key={post._id}
+							{...post}
+							userData={userData}
+							changeLikeStatus={changeLikeStatus}
+							openErrorModal={openErrorModal}
+							editCommentHandler={editCommentHandler}
+							loadMoreCommentHandler={loadMoreCommentHandler}
+						/>
+					)}
+				/>
 			)}
 		</Layout.Content>
 	);

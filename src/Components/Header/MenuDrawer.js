@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Drawer, Menu, Avatar, Badge } from 'antd';
 import {
 	MenuOutlined,
 	UserOutlined,
 	ShoppingCartOutlined,
+	BellOutlined,
 } from '@ant-design/icons';
 import { NavLink, Link } from 'react-router-dom';
 
@@ -14,8 +15,19 @@ import { navlinks } from '../Navbar/Navlinks';
 import { AuthContext } from '../../Custom/context/AuthContext';
 
 export default function MenuDrawer(props) {
-	const { setNeedLogin, userData, logout } = useContext(AuthContext);
+	const { setNeedLogin, userData, logout, notificationsCount } = useContext(
+		AuthContext,
+	);
 	const [visible, setVisible] = useState(false);
+	const [totalNotifications, setTotalNotifications] = useState(0);
+
+	useEffect(() => {
+		if (userData) {
+			setTotalNotifications(userData.cart.length + notificationsCount);
+		} else {
+			setTotalNotifications(0);
+		}
+	}, [userData, notificationsCount]);
 
 	const showDrawer = () => {
 		setVisible(true);
@@ -45,7 +57,9 @@ export default function MenuDrawer(props) {
 				className="menu-mobile-btn"
 				onClick={showDrawer}
 			>
-				<MenuOutlined />
+				<Badge count={totalNotifications}>
+					<MenuOutlined />
+				</Badge>
 			</Button>
 			<Drawer
 				title={header}
@@ -83,10 +97,10 @@ export default function MenuDrawer(props) {
 						</Menu.Item>
 					)}
 					{!!userData && (
-						<Menu.Item
-							icon={<Badge count={userData.notifications.unread} showZero />}
-						>
-							<Link to="/">Thông báo</Link>
+						<Menu.Item icon={<BellOutlined />}>
+							<NavLink to="/thong-bao">
+								Thông báo <Badge count={notificationsCount} />
+							</NavLink>
 						</Menu.Item>
 					)}
 					{!!userData && (

@@ -24,57 +24,59 @@ const UserLogined = (props) => {
 		setNotificationsCount,
 	} = useContext(AuthContext);
 
+	const openNotification = useCallback(
+		(type, data) => {
+			let action = 'thích bài đăng';
+			let description = `"${data.content}..."`;
+			let url;
 
-	const openNotification = useCallback((type, data) => {
-		let action = 'thích bài đăng';
-		let description = `"${data.content}..."`;
-		let url;
+			switch (type) {
+				case 'like post':
+					action = 'thích bài đăng của bạn.';
+					description = `"${data.content}..."`;
+					url = `/cong-dong/${data.postId}`;
+					break;
 
-		switch (type) {
-			case 'like post':
-				action = 'thích bài đăng của bạn.';
-				description = `"${data.content}..."`;
-				url = `/cong-dong/${data.postId}`;
-				break;
+				case 'comment post':
+					action = 'bình luận bài đăng bạn đang theo dõi.';
+					description = `"${data.content}..."`;
+					url = `/cong-dong/${data.postId}`;
+					break;
 
-			case 'comment post':
-				action = 'bình luận bài đăng bạn đang theo dõi.';
-				description = `"${data.content}..."`;
-				url = `/cong-dong/${data.postId}`;
-				break;
+				case 'reply game':
+					action = 'trả lời bình luận trong game bạn đang theo dõi.';
+					description = `"${data.game.name}"`;
+					url = `/detail-game/${data.game.gameId}`;
+					break;
 
-			case 'reply game':
-				action = 'trả lời bình luận trong game bạn đang theo dõi.';
-				description = `"${data.game.name}"`;
-				url = `/detail-game/${data.game.gameId}`;
-				break;
+				default:
+					break;
+			}
 
-			default:
-				break;
-		}
-
-		notification.open({
-			message: (
-				<span>
-					<strong>{data.user.name}</strong> đã {action}
-				</span>
-			),
-			description,
-			placement: 'bottomLeft',
-			icon: <Avatar alt="avatar user" src={data.user.avatar} />,
-			duration: 10,
-			key: Math.random(),
-			closeIcon: null,
-			style: {
-				borderRadius: 5,
-				boxShadow: '0 0 20px #ccc',
-				cursor: 'pointer',
-			},
-			onClick() {
-				props.history.push(url);
-			},
-		});
-	}, [props]);
+			notification.open({
+				message: (
+					<span>
+						<strong>{data.user.name}</strong> đã {action}
+					</span>
+				),
+				description,
+				placement: 'bottomLeft',
+				icon: <Avatar alt="avatar user" src={data.user.avatar} />,
+				duration: 10,
+				key: Math.random(),
+				closeIcon: null,
+				style: {
+					borderRadius: 5,
+					boxShadow: '0 0 20px #ccc',
+					cursor: 'pointer',
+				},
+				onClick() {
+					props.history.push(url);
+				},
+			});
+		},
+		[props],
+	);
 
 	useEffect(() => {
 		const socket = OpenSocket(process.env.REACT_APP_BASE_URL, {
@@ -120,6 +122,7 @@ const UserLogined = (props) => {
 					.then((res) => {
 						setHasFirstFetch(true);
 						setNotifications(res.data.notifications.reverse());
+						setNotificationsCount(0);
 					})
 					.catch((err) => {
 						console.log(err);
@@ -197,11 +200,13 @@ const UserLogined = (props) => {
 				</Button>
 				{visibleNoti && (
 					<NotificationsDropDown
+						desktopSize
 						loading={loadingNotifications}
 						notifications={notifications}
 						setVisibleNoti={setVisibleNoti}
 						markAsReadHandler={markAsReadHandler}
-						setNotificationsCount={setNotificationsCount}
+						className="notifications-dropdown"
+						footer={<Link to="/thong-bao">Tất cả thông báo</Link>}
 					/>
 				)}
 			</div>

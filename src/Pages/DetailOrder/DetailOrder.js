@@ -42,13 +42,15 @@ export default function DetailOrder() {
 					setOrder(res.data.order);
 					setActivatedList(res.data.activatedList);
 					setBlur(Array(res.data.order.games.length).fill(true));
+					setLoading(false);
 				})
 				.catch((err) => {
 					console.log(err);
-					console.log(err.response);
-					setErrorWhenActivate(err.response);
-				})
-				.finally(() => {
+					setError(err.response);
+					const errorText = err.response
+						? err.response.data.message
+						: 'Có lỗi xảy ra';
+					setErrorWhenActivate(errorText);
 					setLoading(false);
 				});
 		}
@@ -119,12 +121,11 @@ export default function DetailOrder() {
 				setActivatedList((prev) => {
 					return { ...prev, [res.data.gameId]: true };
 				});
+				setLoadingWhenActivate(false);
 			})
 			.catch((err) => {
 				console.log(err);
 				setErrorWhenActivate(err.response);
-			})
-			.finally(() => {
 				setLoadingWhenActivate(false);
 			});
 	};
@@ -132,6 +133,11 @@ export default function DetailOrder() {
 	if (!userData && !localStorage.getItem('token')) {
 		console.log(error);
 		return <Redirect to="/" />;
+	}
+
+	if (error) {
+		if (error.status === 402 || error.status === 404)
+			return <Redirect to="/" />;
 	}
 
 	return (
@@ -155,7 +161,7 @@ export default function DetailOrder() {
 				<ErrorModal
 					visible={!!errorWhenActivate}
 					setError={setErrorWhenActivate}
-					errorText={errorWhenActivate.data.message}
+					errorText={errorWhenActivate}
 				/>
 			)}
 			{!!order && (

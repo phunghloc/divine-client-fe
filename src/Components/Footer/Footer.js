@@ -38,7 +38,7 @@ const Footer = () => {
 				{contentService.map((service) => {
 					return (
 						<Col key={service.title} xs={24} md={12} xl={6}>
-							<div className="container">
+							<div className="footer-container">
 								<img src={service.img} alt={service.title} />
 								<div>
 									<h4>{service.title}</h4>

@@ -11,7 +11,7 @@ import {
 	Divider,
 	Spin,
 } from 'antd';
-import InfinityScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import './Homepage.scss';
 import ModalFilter from './ModalFilter';
@@ -38,6 +38,7 @@ const Homepage = (props) => {
 					return [...preGames, ...res.data.games];
 				});
 				setTotal(res.data.total);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -45,8 +46,6 @@ const Homepage = (props) => {
 					? err.response.data.message
 					: 'Có lỗi không xác định xảy ra!';
 				setError(errorText);
-			})
-			.finally(() => {
 				setLoading(false);
 			});
 	}, []);
@@ -151,7 +150,7 @@ const Homepage = (props) => {
 					]}
 				/>
 
-				<InfinityScroll
+				<InfiniteScroll
 					dataLength={games.length}
 					next={fetchDataNextPage}
 					hasMore={total > games.length}
@@ -178,7 +177,7 @@ const Homepage = (props) => {
 							);
 						})}
 					</Row>
-				</InfinityScroll>
+				</InfiniteScroll>
 
 				<ErrorModal visible={!!error} errorText={error} setError={setError} />
 			</Layout.Content>

@@ -81,7 +81,6 @@ export default function Redeem(props) {
 				{ headers: { Authorization: `Bearer ${token}` } },
 			)
 			.then((res) => {
-				console.log(res);
 				openSuccessModalHandler();
 			})
 			.catch((err) => {

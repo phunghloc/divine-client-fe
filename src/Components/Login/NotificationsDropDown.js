@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { List, Avatar, Skeleton } from 'antd';
 import moment from 'moment';
 import 'moment/locale/vi';
@@ -12,17 +11,16 @@ export default function NotificationsDropDown(props) {
 			props.setVisibleNoti(false);
 		};
 
-		window.addEventListener('click', clickAwayEvent);
+		props.desktopSize && window.addEventListener('click', clickAwayEvent);
 
 		return () => {
 			window.removeEventListener('click', clickAwayEvent);
-			props.setNotificationsCount(0);
 		};
 	}, [props]);
 
 	return (
 		<List
-			className="notifications-dropdown"
+			className={props.className}
 			dataSource={props.notifications}
 			renderItem={(notify, index) => {
 				let title;
@@ -61,7 +59,7 @@ export default function NotificationsDropDown(props) {
 					</List.Item>
 				);
 			}}
-			footer={<Link to="/">Tất cả thông báo</Link>}
+			footer={props.footer}
 		>
 			{props.loading &&
 				[1, 2, 3, 4].map((ske) => (

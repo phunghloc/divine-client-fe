@@ -8,6 +8,7 @@ import {
 	Divider,
 	Modal,
 	message,
+	Tooltip,
 } from 'antd';
 import { LikeFilled, MessageOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -28,10 +29,21 @@ const IconText = ({ icon, text }) => (
 	</Space>
 );
 
+const Text = (props) => {
+	return props.text
+		.split('\n')
+		.map((string, index) => <p key={index}>{string}</p>);
+};
+
 export default function Post(props) {
 	const [loadingLike, setLoadingLike] = useState(false);
 	const [loadingMoreComment, setLoadingMoreComment] = useState(false);
 	const [clickRef, setClickRef] = useState(null);
+	const [detailLike, setDetailLike] = useState({
+		visible: false,
+		users: [],
+		loading: false,
+	});
 
 	const likePost = (postId) => {
 		const token = localStorage.getItem('token');
@@ -107,12 +119,62 @@ export default function Post(props) {
 			});
 	};
 
+	const showDetailLikeHandler = () => {
+		setDetailLike((pre) => {
+			return { ...pre, loading: true, visible: true };
+		});
+
+		axios
+			.get(`/posts/${props._id}/likes`)
+			.then((res) => {
+				setDetailLike((pre) => {
+					return { ...pre, loading: false, users: res.data.post.likes };
+				});
+			})
+			.catch((error) => {
+				setDetailLike((pre) => {
+					return { ...pre, visible: false };
+				});
+				const errorText = error.response ? error.response.data.message : null;
+				props.openErrorModal(errorText);
+			});
+	};
+
+	const closeModal = () => {
+		setDetailLike((pre) => {
+			return { ...pre, visible: false };
+		});
+	};
+
 	const editPostHandler = () => {
 		console.log('edit post');
 	};
 
 	return (
 		<List.Item className="community-item post-item">
+			<Modal
+				closable={false}
+				onCancel={closeModal}
+				footer={null}
+				visible={detailLike.visible}
+				bodyStyle={{padding: '0 24px 12px'}}
+			>
+				<List
+					dataSource={detailLike.users}
+					header={
+						<h3>{detailLike.users.length} nguời đã thích bài đăng này.</h3>
+					}
+					renderItem={(user) => (
+						<List.Item>
+							<List.Item.Meta
+								avatar={<Avatar src={user.avatar} />}
+								title={<Link to={`/tai-khoan/${user._id}`}>{user.name}</Link>}
+							/>
+						</List.Item>
+					)}
+					loading={detailLike.loading}
+				/>
+			</Modal>
 			<List.Item.Meta
 				avatar={
 					<Avatar
@@ -130,18 +192,20 @@ export default function Post(props) {
 					</Link>
 				}
 			/>
-			<p>{props.content}</p>
+			<Text text={props.content} />
 			{!!props.images.length && (
 				<Image src={props.images[0].url} width={'100%'} alt="Anh minh hoa" />
 			)}
 			<ul className="like-comment-count">
-				<li>
-					<IconText
-						icon={LikeFilled}
-						text={props.likes}
-						key="list-vertical-like-o"
-					/>
-				</li>
+				<Tooltip title="Xem những ai thích bài đăng này" placement="bottom">
+					<li onClick={showDetailLikeHandler}>
+						<IconText
+							icon={LikeFilled}
+							text={props.likes}
+							key="list-vertical-like-o"
+						/>
+					</li>
+				</Tooltip>
 				<li>
 					<IconText
 						icon={MessageOutlined}

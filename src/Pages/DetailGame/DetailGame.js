@@ -155,7 +155,7 @@ const DetailGame = (props) => {
 						<Descriptions layout="vertical" column={2} size="small">
 							<Descriptions.Item label="Nhà phát triển">
 								<Link
-									to={`/search-game?developer=${game.developer._id}`}
+									to={`/?developer=${game.developer._id}`}
 									style={{ color: 'black', textDecoration: 'underline' }}
 								>
 									{game.developer.name}
@@ -164,15 +164,14 @@ const DetailGame = (props) => {
 							<Descriptions.Item label="Thể loại">
 								<div>
 									{game.tags.map((tag) => (
-										<Link key={tag.tagId.label} to="/">
-											<Tag
-												color={
-													tagsColor[tag.tagId.label.length % tagsColor.length]
-												}
-											>
-												{tag.tagId.label}
-											</Tag>
-										</Link>
+										<Tag
+											key={tag.tagId.label}
+											color={
+												tagsColor[tag.tagId.label.length % tagsColor.length]
+											}
+										>
+											{tag.tagId.label}
+										</Tag>
 									))}
 								</div>
 							</Descriptions.Item>

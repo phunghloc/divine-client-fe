@@ -1,0 +1,41 @@
+.notifications-dropdown {
+	background-color: white;
+	border-radius: 8px;
+	padding: 6px 6px 0;
+	box-shadow: 0 0 20px #999;
+	.ant-list-item {
+		cursor: pointer;
+		padding: 12px;
+		border-radius: 6px;
+		&:hover {
+			background-color: #efefef;
+		}
+	}
+	h4 {
+		color: #65676b;
+	}
+	.unread {
+		h4 {
+			color: black;
+		}
+		.ant-list-item-meta-description {
+			color: #1876f2;
+			font-weight: 500;
+		}
+		.unread-dot {
+			width: 12px;
+			height: 12px;
+			background-color: #1876f2;
+			border-radius: 50%;
+		}
+	}
+	.ant-skeleton-paragraph {
+		margin: 0;
+	}
+	.ant-list-footer {
+		text-align: center;
+		a {
+			font-weight: 500;
+		}
+	}
+}
